@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -53,7 +50,6 @@ public class MenuController {
             menuDao.save(menu);
             return "redirect:view/" + menu.getId();
         }
-
     }
 
     @RequestMapping(value="view/{id}", method = RequestMethod.GET)
@@ -73,5 +69,19 @@ public class MenuController {
         return "menu/additem";
     }
 
+    @RequestMapping(value = "add-item/{id}", method = RequestMethod.POST)
+    public String addItem(Model model, @ModelAttribute @Valid AddMenuItemForm form, Errors errors, @RequestParam int cheeseId, @RequestParam int menuId) {
 
+        if (errors.hasErrors()) {
+            Menu menu = menuDao.findOne(menuId);
+            model.addAttribute("title", "Add Item to "+menu.getName());
+            return "menu/additem";
+        } else {
+            Cheese cheese = cheeseDao.findOne(cheeseId);
+            Menu menu = menuDao.findOne(menuId);
+            menu.addItem(cheese);
+            menuDao.save(menu);
+            return "redirect:/menu/view/"+menuId;
+        }
+    }
 }
