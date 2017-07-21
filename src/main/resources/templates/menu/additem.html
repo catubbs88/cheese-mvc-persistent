@@ -1,0 +1,34 @@
+<!-- The template should contain a form that posts to /menu/add-item, and renders the form using the form attribute that was passed in.
+Use th:object to bind form to the <form> element, and display a <select> element that contains all of the cheeses.
+The name of this input should be cheeseId, and the value attribute of each <option> should be the id of the given cheese.
+This will result in the ID of the item to add being passed in the request.
+Be sure to use th:for, th:field, and th:errors in creating the label, input, and span elements.
+
+ -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+<h1 th:text="${title}">Default Title</h1>
+
+<nav th:replace="fragments :: navigation"></nav>
+
+<form th:object="${form}" method="post" style="max-width:600px;">
+
+    <div class="form-group">
+        <label th:for="cheeseId">Cheese</label>
+        <select th:field="*{cheeseId}">
+            <option th:each="cheese : *{cheeses}"
+                    th:value="${cheese.id}"
+                    th:text="${cheese.name}"></option>
+        </select>
+        <span th:errors="*{cheeses}" class="error"></span>
+        <input type="hidden" name="menuId" th:value="*{menu.id}" />
+    </div>
+
+    <input type="submit" value="Add Item to Menu" />
+</form>
+
+</body>
+</html>
